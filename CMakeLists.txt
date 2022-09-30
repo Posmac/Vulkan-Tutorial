@@ -6,9 +6,10 @@ set(GLFW_VULKAN_STATIC, "True")
 set(PROJECT_NAME VulkanBook)
 
 add_executable(VulkanBook
-        main.cpp
-        VulkanApp.cpp
-        VulkanApp.h)
+        src/main.cpp
+        src/VulkanApp.cpp
+        src/VulkanApp.h 
+        src/Vertex.h)
 
 set(VULKAN_SDK_PATH  C:/VulkanSDK/1.3.216.0)
 set(Vulkan_INCLUDE_DIRS "${VULKAN_SDK_PATH}/Include")

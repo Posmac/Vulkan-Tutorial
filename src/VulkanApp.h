@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vulkan/vulkan.h"
+#include "Vertex.h"
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -89,6 +90,10 @@ private:
 	void createCommandBuffers();
 	void recordCommandBuffer(VkCommandBuffer buffer, uint32_t imageIndex);
 
+	//command buffers
+	void createVertexBuffer();
+	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags props);
+
 	//draw
 	void drawFrame();
 
@@ -122,6 +127,12 @@ private:
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 	};
 
+	const std::vector<Vertex> vertices = {
+		{{0.0f, -0.5f, 0.0f}, {0.0f, 0.0f, 0.0f}},
+		{{0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+		{{-0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}}
+	};
+
 	GLFWwindow* window;
 
 	VkInstance instance = VK_NULL_HANDLE;
@@ -152,6 +163,9 @@ private:
 	std::vector<VkFence> inFlightFences;
 
 	uint32_t currentFrame = 0;
+
+	VkBuffer vertexBuffer;
+	VkDeviceMemory vertexBufferMemory;
 
 	VkDebugUtilsMessengerEXT debugUtilsMessengerExt = VK_NULL_HANDLE;
 };
