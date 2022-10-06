@@ -11,7 +11,8 @@ add_executable(VulkanBook
         src/VulkanApp.h 
         src/Vertex.h 
         src/Structs.h 
-        src/stb_image.h)
+        src/stb_image.h 
+        src/tiny_obj_loader.h)
 
 set(VULKAN_SDK_PATH  C:/VulkanSDK/1.3.216.0)
 set(Vulkan_INCLUDE_DIRS "${VULKAN_SDK_PATH}/Include")

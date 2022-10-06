@@ -7,9 +7,12 @@
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
+const std::string MODEL_PATH = "models/viking_room.obj";
+const std::string TEXTURE_PATH = "textures/viking_room.png";
+
 int main()
 {
-    VulkanApp app(WIDTH, HEIGHT);
+    VulkanApp app(WIDTH, HEIGHT, MODEL_PATH, TEXTURE_PATH);
     try
     {
         app.run();

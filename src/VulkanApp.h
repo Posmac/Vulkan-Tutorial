@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -21,6 +22,7 @@
 #include <algorithm>
 #include <fstream>
 #include <chrono>
+#include <unordered_map>
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -44,7 +46,8 @@ struct SwapChainSupportDetails
 
 class VulkanApp {
 public:
-	VulkanApp(int width, int height);
+	VulkanApp(int width, int height,
+		 const std::string& modelPath, const std::string& texturePath);
 	void run();
 private:
 	//window initialization
@@ -79,6 +82,8 @@ private:
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& caps);
 	void createSwapChain();
+	void recreateSwapChain();
+	void cleanupSwapChain();
 
 	//create image views
 	void createImageViews();
@@ -126,9 +131,18 @@ private:
     void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
     void createTextureImageView();
-    VkImageView createImageView(VkImage image, VkFormat format);
+    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
     void createTextureSampler();
 
+	//depth test
+	void createDepthResources();
+	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
+		VkImageTiling tiling, VkFormatFeatureFlags features);
+	VkFormat findDepthFormat();
+	bool hasStencilComponent(VkFormat format);
+
+	//loading models
+	void loadModel();
 
 	void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 	void destroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
@@ -150,6 +164,10 @@ private:
 	int width;
 	int height;
 	bool enableValidationLayers = true;
+	bool framebufferResized = false;
+
+	std::string modelPath;
+	std::string texturePath;
 
 	std::vector<const char*> validationLayers = {
 			"VK_LAYER_KHRONOS_validation"
@@ -159,16 +177,8 @@ private:
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 	};
 
-	const std::vector<Vertex> vertices = {
-		{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-		{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-		{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-		{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
-	};
-
-	const std::vector<uint16_t> indices = {
-		0, 1, 2, 2, 3, 0
-	};
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
 
 	GLFWwindow* window;
 
@@ -217,6 +227,10 @@ private:
 	VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
     VkSampler textureSampler;
+
+	VkImage depthImage;
+	VkDeviceMemory depthImageMemory;
+	VkImageView depthImageView;
 
 	VkDebugUtilsMessengerEXT debugUtilsMessengerExt = VK_NULL_HANDLE;
 };
