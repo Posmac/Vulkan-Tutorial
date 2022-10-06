@@ -125,13 +125,13 @@ private:
 
 	//textures
 	void createTextureImage();
-	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling,
+	void createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling,
 		VkImageUsageFlags usage, VkMemoryPropertyFlags properties,
 		VkImage& image, VkDeviceMemory& imageMemory);
-    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
     void createTextureImageView();
-    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
     void createTextureSampler();
 
 	//depth test
@@ -143,6 +143,9 @@ private:
 
 	//loading models
 	void loadModel();
+
+	//mipmaps
+	void generateMipMaps(VkImage image, VkFormat format, int32_t width, int32_t height, uint32_t mipLevels);
 
 	void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 	void destroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
@@ -223,6 +226,7 @@ private:
 	VkDescriptorPool descriptorPool;
 	std::vector<VkDescriptorSet> descriptorSets;
 
+	uint32_t mipLevels;
 	VkImage textureImage;
 	VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
