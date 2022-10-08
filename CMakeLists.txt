@@ -14,7 +14,7 @@ add_executable(VulkanBook
         src/stb_image.h 
         src/tiny_obj_loader.h)
 
-set(VULKAN_SDK_PATH  C:/VulkanSDK/1.3.216.0)
+set(VULKAN_SDK_PATH  D:/VulkanSDK/1.3.216.0)
 set(Vulkan_INCLUDE_DIRS "${VULKAN_SDK_PATH}/Include")
 set(Vulkan_LIBRARIES "${VULKAN_SDK_PATH}/Lib")
 
